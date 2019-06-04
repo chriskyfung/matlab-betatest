@@ -1,0 +1,23 @@
+function [xcl, ycl, phat] = betatest(data, P)
+
+% Programmed by K.Y. Fung
+% last edit 2010-08-12
+
+
+phat = betafit(data,0.05);
+xcl = betainv(P, phat(1), phat(2));
+ycl = betapdf(xcl, phat(1), phat(2));
+%%
+x=0:0.001:1;
+y=betapdf(x,phat(1), phat(2));
+
+plot(x,y,'color','k', 'LineWidth', 2);
+grid on
+set(gca, 'FontWeight' ,'bold', 'GridLineStyle', '-', 'LineWidth', 2);
+
+h.p1 = get(gca, 'Position');
+h.l1 = get(gca, 'YLim');
+h.x = h.p1(1) + xcl * h.p1(3);
+h.y = h.p1(2) + ycl/(h.l1(2)-h.l1(1)) *h.p1(4);
+annotation('textarrow', [h.x, h.x], [h.y h.p1(2)] , 'HeadStyle' ,'plain');
+text(xcl, ycl ,['  ' num2str(P*100) '% Confidence Limit = ' num2str(xcl, 2)], 'FontWeight', 'bold');
